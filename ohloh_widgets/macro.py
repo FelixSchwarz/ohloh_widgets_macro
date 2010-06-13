@@ -23,15 +23,13 @@
 # THE SOFTWARE.
 
 from genshi.builder import tag
-from pycerberus import InvalidDataError
+from pycerberus import Validator
 from pycerberus.validators import IntegerValidator, StringValidator
 from trac.core import ExtensionPoint
-from trac.wiki.macros import WikiMacroBase
-from trac.wiki.formatter import system_message
 
 from ohloh_widgets.api import IOhlohWidgetModifier
-from ohloh_widgets.lib.attribute_dict import AttrDict
-from ohloh_widgets.validation import CommaSeparatedArgumentsParsingSchema
+from ohloh_widgets.util import MacroWithValidation
+from ohloh_widgets.validation import CommaSeparatedArgumentsParsingSchema, VarArgsParsingSchema
 
 
 class OhlohWidgetParameters(CommaSeparatedArgumentsParsingSchema):
@@ -39,24 +37,6 @@ class OhlohWidgetParameters(CommaSeparatedArgumentsParsingSchema):
     parameter_order = ('project_id', 'widget_name')
     project_id = IntegerValidator()
     widget_name = StringValidator()
-
-
-class MacroWithValidation(WikiMacroBase):
-    abstract = True
-    
-    def validate_arguments(self, schema, argument_string):
-        try:
-            return AttrDict(schema.process(argument_string)), None
-        except InvalidDataError, e:
-            return None, e
-    
-    def show_all_errors(self, e):
-        container = tag.span()
-        for field_name, error in e.error_dict().items():
-            text = u'%s: %s' % (field_name, error.details().msg())
-            container.append(system_message(text))
-            container.append(tag.br())
-        return container
 
 
 class OhlohWidgetMacro(MacroWithValidation):
@@ -81,7 +61,7 @@ class OhlohWidgetMacro(MacroWithValidation):
     def expand_macro(self, formatter, macro_name, argument_string, processor_parameters=None):
         parameters, error = self.validate_arguments(OhlohWidgetParameters(), argument_string)
         if error:
-            return self._show_all_errors(error)
+            return self.show_all_errors(error)
         
         widget_tag = self._script_tag_for_widget(parameters)
         return self._container_for_widget(parameters, widget_tag)
@@ -105,6 +85,52 @@ class OhlohWidgetMacro(MacroWithValidation):
     def _container_for_widget(self, parameters, widget):
         tag_id = 'ohloh-%(project_id)d-%(widget_name)s' % parameters
         modification = self._widget_modification(parameters.widget_name, tag_id)
-        return tag.span(widget, modification, id=tag_id, class_=parameters.widget_name)
+        css_classes = ['ohloh-widget', parameters.widget_name]
+        return tag.span(widget, modification, id=tag_id, class_=' '.join(css_classes))
 
+
+
+class OhlohWidgetGroupParameters(VarArgsParsingSchema):
+    
+    parameter_order = ('project_id', 'widget_names')
+    project_id = IntegerValidator()
+    widget_names = Validator()
+
+
+class OhlohWidgetGroup(MacroWithValidation):
+    """Macro to embed a group of Ohloh widgets in wiki pages.
+    
+    Example:
+       ![[OhlohWidgetGroup(project_id, first_widget_name, second_widget_name)]]
+    
+    The parameter values are the same as for the !OhlohWidget macro.
+    
+    This macro will put all contained widgets in a div element which you can
+    style easily with CSS.
+    """
+    
+    # ---- WikiMacroBase public methods ----------------------------------------
+    
+    def expand_macro(self, formatter, macro_name, argument_string, processor_parameters=None):
+        parameters, error = self.validate_arguments(OhlohWidgetGroupParameters(), argument_string)
+        if error:
+            return self.show_all_errors(error)
+        
+        widgets = self._widget_tags(parameters, formatter, macro_name)
+        return self._container_for_widget(parameters, widgets)
+    
+    def _widget_tags(self, parameters, formatter, macro_name):
+        widgets = []
+        macro = OhlohWidgetMacro(self.env)
+        for widget_name in parameters.widget_names:
+            widget_paremeters = dict(project_id=parameters.project_id, widget_name=widget_name)
+            argument_string = '%(project_id)s, %(widget_name)s' % widget_paremeters
+            widget = macro.expand_macro(formatter, macro_name, argument_string)
+            widgets.append(widget)
+        return widgets
+    
+    def _container_for_widget(self, parameters, widgets):
+        parameters['widget_names'] = '-'.join(parameters.widget_names)
+        tag_id = 'ohloh-%(project_id)d-%(widget_names)s' % parameters
+        return tag.div(widgets, id=tag_id, class_='ohloh-widgets')
 

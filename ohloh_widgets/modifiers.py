@@ -27,7 +27,34 @@ from trac.core import Component, implements
 
 from ohloh_widgets.api import IOhlohWidgetModifier
 
-__all__ = ['ProjectFactoids']
+__all__ = ['ProjectBasicStats', 'ProjectFactoids']
+
+
+class ProjectBasicStats(Component):
+    implements(IOhlohWidgetModifier)
+    
+    def widget_name(self):
+        return "project_basic_stats"
+    
+    def widget_fix(self, tag_id):
+        ""
+        js = '''
+            var widget = jQuery('#%(tag_id)s');
+            
+            // trac's wiki page/h3 has a negative margin-left
+            widget.find('h3').css({'margin-left': '-10px'});
+            
+            // #div.gadget div.main' gets an additional margin-left which looks
+            // bad - however it's done with an addition <style> tag so we can't
+            // remove the rule itself. Instead this will make sure that the rule
+            // does not apply anymore
+            widget.find('div.gadget div.main').removeClass('main');
+            
+            // the Ohloh logo floats all the way to the right, so we just set
+            // a width
+            widget.find('div.gadget').css({'width': '20em'});
+        ''' % dict(tag_id=tag_id)
+        return tag.script(js, type='text/javascript')
 
 
 class ProjectFactoids(Component):

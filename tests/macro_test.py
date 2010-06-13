@@ -1,5 +1,4 @@
 
-from pycerberus import InvalidDataError
 from trac.test import EnvironmentStub
 
 from ohloh_widgets.macro import OhlohWidgetMacro, OhlohWidgetParameters

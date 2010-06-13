@@ -1,6 +1,13 @@
 
 TODO:
-- Support Widget Groups
 - Support widgets with query parameters
+
+- move schemas into pycerberus
+    - document schemas
+- public release
+    - trac environment
+    - screen shots
+    - some documentation
+    - trac-hacks dummy site
 - better testing?
 

@@ -56,16 +56,22 @@ class PositionalArgumentsParsingSchema(SchemaValidator):
     def _parameter_names(self):
         return list(self._parameter_order)
     
-    def _assign_names(self, arguments, context):
+    def aggregate_values(self, parameter_names, arguments):
+        """This method can manipulate or aggregate parsed arguments. In this 
+        class, it's just a noop but sub classes can override this method to do
+        more interesting stuff."""
+        return parameter_names, arguments
+    
+    def _map_arguments_to_named_fields(self, value, context):
         parameter_names = self._parameter_names()
+        arguments = self.split_parameters(value, context)
+        
+        parameter_names, arguments = self.aggregate_values(parameter_names, arguments)
         nr_missing_parameters = max(len(parameter_names) - len(arguments), 0)
-        nr_additional_parameters = max(len(arguments), len(parameter_names), 0)
+        nr_additional_parameters = max(len(arguments) - len(parameter_names), 0)
         arguments.extend([None] * nr_missing_parameters)
         parameter_names.extend(['extra%d' % i for i in xrange(nr_additional_parameters)])
         return dict(zip(parameter_names, arguments))
-    
-    def _map_arguments_to_named_fields(self, value, context):
-        return self._assign_names(self.split_parameters(value, context), context)
     
     def set_parameter_order(self, parameter_names):
         self._parameter_order = parameter_names
@@ -80,6 +86,17 @@ class PositionalArgumentsParsingSchema(SchemaValidator):
 class CommaSeparatedArgumentsParsingSchema(PositionalArgumentsParsingSchema):
     
     def separator_pattern(self):
-#        return '\s+'
         return '\s*,\s*'
+
+
+# TODO: This schema should actually be merged in the one above but with a 
+# parameter to enable this behavior
+class VarArgsParsingSchema(PositionalArgumentsParsingSchema):
+    def aggregate_values(self, parameter_names, arguments):
+        if len(arguments) < len(parameter_names):
+            return (parameter_names, arguments)
+        last_known_index = len(parameter_names) - 1
+        known_arguments = arguments[:last_known_index]
+        aggregated_arguments = arguments[last_known_index:]
+        return parameter_names, known_arguments + [aggregated_arguments]
 
