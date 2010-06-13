@@ -1,0 +1,8 @@
+
+Changelog for OhlohWidetMacro
+=============================
+
+0.1 (13.06.2010)
+- initial widget macro which can generate code to embed single macros without
+  query parameters
+

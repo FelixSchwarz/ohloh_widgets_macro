@@ -1,0 +1,6 @@
+
+TODO:
+- Support Widget Groups
+- Support widgets with query parameters
+- better testing?
+
