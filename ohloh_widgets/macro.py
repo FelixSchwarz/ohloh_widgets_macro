@@ -69,11 +69,17 @@ class OhlohWidgetMacro(MacroWithValidation):
     # ---- HTML generation -----------------------------------------------------
     
     def url(self, parameters):
+        query_string = ''
         url_template = 'http://www.ohloh.net/p/%(project_id)d/widgets/%(widget_name)s.js'
-        return url_template % parameters
+        widget_name = parameters.widget_name
+        if '?' in widget_name:
+            parameters['widget_name'], query_parameters = widget_name.split('?', 1)
+            query_string = '?' + query_parameters
+        return (url_template % parameters) + query_string
     
     def _script_tag_for_widget(self, parameters):
         script_url = self.url(parameters)
+        print 'script_url', script_url
         return tag.script(src=script_url, type='text/javascript')
     
     def _widget_modification(self, widget_name, tag_id):

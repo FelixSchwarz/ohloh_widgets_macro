@@ -1,7 +1,5 @@
 
 TODO:
-- Support widgets with query parameters
-
 - move schemas into pycerberus
     - document schemas
 - public release
@@ -9,5 +7,6 @@ TODO:
     - screen shots
     - some documentation
     - trac-hacks dummy site
+- query parameters should be removed in div for widget group id/class name 
 - better testing?
 

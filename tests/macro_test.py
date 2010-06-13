@@ -2,6 +2,7 @@
 from trac.test import EnvironmentStub
 
 from ohloh_widgets.macro import OhlohWidgetMacro, OhlohWidgetParameters
+from ohloh_widgets.lib.attribute_dict import AttrDict
 from ohloh_widgets.lib.testcase import PythonicTestCase
 
 
@@ -29,7 +30,7 @@ class OhlohWidgetMacroTest(PythonicTestCase):
         self.assert_not_none(error)
         return error
     
-    # --- Tess -----------------------------------------------------------------
+    # --- validation tests -----------------------------------------------------
     
     def test_can_split_positional_arguments(self):
         self.assert_equals((123456, 'foo'), self.assert_valid_arguments('123456, foo'))
@@ -42,4 +43,14 @@ class OhlohWidgetMacroTest(PythonicTestCase):
     
     def test_validation_fails_if_widget_name_is_missing(self):
         self.assert_invalid('1234')
+    
+    # --- script url tests -----------------------------------------------------
+    
+    def test_generates_correct_script_url(self):
+        url = self.macro.url(AttrDict(project_id=123, widget_name='foo'))
+        self.assert_equals('http://www.ohloh.net/p/123/widgets/foo.js', url)
+    
+    def test_supports_query_parameters(self):
+        url = self.macro.url(AttrDict(project_id=123, widget_name='foo?q=bar'))
+        self.assert_equals('http://www.ohloh.net/p/123/widgets/foo.js?q=bar', url)
 

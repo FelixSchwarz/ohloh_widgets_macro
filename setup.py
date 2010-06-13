@@ -6,7 +6,7 @@ import setuptools
 if __name__ == '__main__':
     setuptools.setup(
         name='OhlohWidgetsMacro',
-        version='0.1',
+        version='0.2',
         
         description='Trac macro to embed Ohloh widgets',
         author='Felix Schwarz',
