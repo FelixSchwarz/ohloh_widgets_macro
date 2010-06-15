@@ -11,7 +11,7 @@ if __name__ == '__main__':
         description='Trac macro to embed Ohloh widgets',
         author='Felix Schwarz',
         author_email='felix.schwarz@oss.schwarz.eu',
-        #url=url,
+        url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro',
         #download_url=download_url,
         license='MIT',
         
