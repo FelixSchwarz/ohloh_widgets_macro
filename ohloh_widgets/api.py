@@ -29,8 +29,14 @@ __all__ = ['IOhlohWidgetModifier']
 
 class IOhlohWidgetModifier(Interface):
     def widget_name(self):
-        ""
+        """Return the name of the widget which this modifier can modify.
+        
+        The widget name is the name of the JS file (e.g. 'project_factoids.js')
+        without the '.js' suffix (=> 'project_factoids').
+        """
     
     def widget_fix(self):
-        ""
+        """Return a Genshi tag which is inserted directly after the widget's 
+        script tag. Use this to add custom CSS/Javascript which whips the 
+        widget into shape (again)."""
 
