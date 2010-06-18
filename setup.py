@@ -12,7 +12,7 @@ if __name__ == '__main__':
         author='Felix Schwarz',
         author_email='felix.schwarz@oss.schwarz.eu',
         url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro',
-        #download_url=download_url,
+        download_url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro/download/',
         license='MIT',
         
         install_requires=['genshi', 'trac >= 0.11', 'pycerberus >= 0.3'],
