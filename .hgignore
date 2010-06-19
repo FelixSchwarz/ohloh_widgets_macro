@@ -1,3 +1,5 @@
 eggs
 env
 shell
+build
+dist
