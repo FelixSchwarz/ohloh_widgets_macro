@@ -18,7 +18,7 @@ if __name__ == '__main__':
         install_requires=['genshi', 'trac >= 0.11', 'pycerberus >= 0.3'],
         
         zip_safe=True,
-        packages=setuptools.find_packages(),
+        packages=setuptools.find_packages(exclude=['tests']),
         classifiers = [
             'Development Status :: 4 - Beta',
             'Framework :: Trac',
