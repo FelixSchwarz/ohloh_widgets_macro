@@ -4,15 +4,16 @@
 import setuptools
 
 if __name__ == '__main__':
+    version = '0.2'
     setuptools.setup(
         name='OhlohWidgetsMacro',
-        version='0.2',
+        version=version,
         
         description='Trac macro to embed Ohloh widgets',
         author='Felix Schwarz',
         author_email='felix.schwarz@oss.schwarz.eu',
         url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro',
-        download_url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro/download/',
+        download_url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro/download/%s' % version,
         license='MIT',
         
         install_requires=['genshi', 'trac >= 0.11', 'pycerberus >= 0.3'],
