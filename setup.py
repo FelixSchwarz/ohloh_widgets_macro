@@ -16,9 +16,10 @@ if __name__ == '__main__':
         download_url='http://www.schwarz.eu/opensource/projects/ohloh_widgets_macro/download/%s' % version,
         license='MIT',
         
-        install_requires=['genshi', 'trac >= 0.11', 'pycerberus >= 0.3'],
+        install_requires=['genshi', 'Trac >= 0.11', 'pycerberus >= 0.3'],
         
-        zip_safe=True,
+        # uses simple_super
+        zip_safe=False,
         packages=setuptools.find_packages(exclude=['tests']),
         classifiers = [
             'Development Status :: 4 - Beta',
