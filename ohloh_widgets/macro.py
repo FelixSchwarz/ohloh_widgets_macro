@@ -79,7 +79,6 @@ class OhlohWidgetMacro(MacroWithValidation):
     
     def _script_tag_for_widget(self, parameters):
         script_url = self.url(parameters)
-        print 'script_url', script_url
         return tag.script(src=script_url, type='text/javascript')
     
     def _widget_modification(self, widget_name, tag_id):
