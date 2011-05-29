@@ -17,6 +17,7 @@ if __name__ == '__main__':
         license='MIT',
         
         install_requires=['genshi', 'Trac >= 0.11', 'pycerberus >= 0.3'],
+        tests_require=['TracDevPlatformPlugin'],
         
         # uses simple_super
         zip_safe=False,

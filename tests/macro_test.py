@@ -1,9 +1,9 @@
 
-from trac.test import EnvironmentStub
+from trac_dev_platform.test import EnvironmentStub
+from trac_dev_platform.test.lib.pythonic_testcase import *
 
 from ohloh_widgets.macro import OhlohWidgetMacro, OhlohWidgetParameters
 from ohloh_widgets.lib.attribute_dict import AttrDict
-from ohloh_widgets.lib.testcase import PythonicTestCase
 
 
 class OhlohWidgetMacroTest(PythonicTestCase):

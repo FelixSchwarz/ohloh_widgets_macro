@@ -1,8 +1,8 @@
 
 from pycerberus.api import Validator
 from pycerberus.validators import IntegerValidator
+from trac_dev_platform.test.lib.pythonic_testcase import *
 
-from ohloh_widgets.lib.testcase import PythonicTestCase
 from ohloh_widgets.validation import VarArgsParsingSchema
 
 
